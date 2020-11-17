@@ -1,5 +1,9 @@
 ﻿Public Class clsPlayer
+
+    'Private Variables only viewable/accessible within the class
+    'Typically private variables in classes are prefixes with an _ to denote private
     Private _strName As String = String.Empty
+
     Private _strTeam As String = String.Empty
     Private _intDamageCanCause As Integer = 0
     Private _intHealthPoints As Integer = 0
@@ -29,7 +33,7 @@
             _strTeam = strValue
         End Set
         Get
-            Return _strName
+            Return _strTeam
         End Get
     End Property
 
