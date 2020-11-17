@@ -59,7 +59,7 @@ Public Class clsPlayer
 
     'Holds the name of the Team the player belongs to,
     'But for monsters, it is just left empty
-    'IE: Gardians of the Galaxy
+    'IE: Guardians of the Galaxy
     Public Property strTeam As String
         Set(strValue As String)
             _strTeam = strValue

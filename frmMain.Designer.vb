@@ -287,6 +287,7 @@ Partial Class frmMain
         '
         'frmMain
         '
+        Me.AcceptButton = Me.btnBeginCombat
         Me.AutoScaleDimensions = New System.Drawing.SizeF(9.0!, 19.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(635, 608)

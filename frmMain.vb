@@ -29,8 +29,9 @@ Public Class frmMain
     End Sub
 
     Private Sub btnBeginCombat_Click(sender As Object, e As EventArgs) Handles btnBeginCombat.Click
-
         'Set the Hero Class Object Properties
+
+        'Make sure we have an entry (non-blank)
         If Not tbxPlayerName.Text.Trim.Length > 0 Then
             MessageBox.Show("Missing or blank Player Name",
                 "Validation Failure - Player Name", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -40,6 +41,7 @@ Public Class frmMain
         End If
         clsHero.strName = tbxPlayerName.Text.Trim
 
+        'Make sure we have an entry (non-blank)
         If Not tbxPlayerTeamName.Text.Trim.Length > 0 Then
             MessageBox.Show("Missing or blank Player Team Name",
                 "Validation Failure - Player Team Name", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -49,6 +51,7 @@ Public Class frmMain
         End If
         clsHero.strTeam = tbxPlayerTeamName.Text.Trim
 
+        'Make sure we have a valid entry
         If Not Integer.TryParse(tbxPlayerHealthPoints.Text, clsHero.intHeathPoints) Then
             MessageBox.Show("Invalid or non-Integer Entry",
                 "Validation Failure - Player Health", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -57,6 +60,7 @@ Public Class frmMain
             Return
         End If
 
+        'Make sure we have a valid entry
         If Not Integer.TryParse(tbxPlayerDamage.Text, clsHero.intDamageCanCause) Then
             MessageBox.Show("Invalid or non-Integer Entry",
                 "Validation Failure - Player Damage", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -66,6 +70,7 @@ Public Class frmMain
         End If
 
         'Set the Monster Class Object Properties
+        'Make sure we have an entry (non-blank)
         If Not tbxMonsterType.Text.Trim.Length > 0 Then
             MessageBox.Show("Missing or blank Monster Type",
                 "Validation Failure - Monster Type", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -75,6 +80,7 @@ Public Class frmMain
         End If
         clsMonster.strName = tbxMonsterType.Text.Trim
 
+        'Make sure we have a valid entry
         If Not Integer.TryParse(tbxMonsterHealthPoints.Text, clsMonster.intHeathPoints) Then
             MessageBox.Show("Invalid or non-Integer Entry",
                 "Validation Failure - Monster Health", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -83,6 +89,7 @@ Public Class frmMain
             Return
         End If
 
+        'Make sure we have a valid entry
         If Not Integer.TryParse(tbxMonsterDamage.Text, clsMonster.intDamageCanCause) Then
             MessageBox.Show("Invalid or non-Integer Entry",
                 "Validation Failure - Monster Damage", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -91,6 +98,7 @@ Public Class frmMain
             Return
         End If
 
+        'Disable the ability to change the value so we can start the game
         tbxMonsterDamage.Enabled = False
         tbxMonsterHealthPoints.Enabled = False
         tbxMonsterType.Enabled = False
@@ -99,8 +107,10 @@ Public Class frmMain
         tbxPlayerName.Enabled = False
         tbxPlayerTeamName.Enabled = False
 
+        'Enable the Attack Button
         btnAttack.Enabled = True
 
+        'Display our Hero and Monster's information in the listbox
         lbxAttackResults.Items.Add("Hero Name: " + clsHero.strName)
         lbxAttackResults.Items.Add("Hero Team: " + clsHero.strTeam)
         lbxAttackResults.Items.Add("Hero Health: " + clsHero.intHeathPoints.ToString)
@@ -111,26 +121,32 @@ Public Class frmMain
         lbxAttackResults.Items.Add("Monster Damage Can Cause: " + clsMonster.intDamageCanCause.ToString)
         lbxAttackResults.Items.Add("------------------------------------------")
 
+        'update out current/remaining health points labels
         lblHeroRemainingHP.Text = clsHero.intHeathPoints.ToString
         lblMonsterRemainingHP.Text = clsMonster.intHeathPoints.ToString
+
+        'Disable the Begin Combat Button
         btnBeginCombat.Enabled = False
+
+        'Change the form's accept button to the 'Attack' Button
+        Me.AcceptButton = btnAttack
     End Sub
 
     Private Sub btnAttack_Click(sender As Object, e As EventArgs) Handles btnAttack.Click
-        Dim bolHitSuccess As Boolean = False
-        Dim rnd As New Random
-        Dim intDamageDone As Integer = 0
+        'Setup our variables we will need
+        Dim bolHitSuccess As Boolean = False 'Flag to tell us if the attempt to hit/attack was successful for each
+        Dim rnd As New Random   'Random Number generator
+        Dim intDamageDone As Integer = 0 'How much damage was done during the attack
 
         'A poor man's Random Hit Success Indicator
         'Hero's Attack
-        bolHitSuccess = rnd.Next(0, 2) > 0
-        If bolHitSuccess Then
-            'lbxAttackResults.Items.Add("Hero Hit: " + bolHitSuccess.ToString)
-            intDamageDone = rnd.Next(0, clsHero.intDamageCanCause)
-            clsMonster.Attacked(intDamageDone)
+        bolHitSuccess = rnd.Next(0, 2) > 0 'Used to indicate if, randomly, the attack was succesful or not
+        If bolHitSuccess Then   'If the attack was successful
+            intDamageDone = rnd.Next(0, clsHero.intDamageCanCause)  'Randomize how much damage was done based on how much they can do
+            clsMonster.Attacked(intDamageDone) 'Update the Heath points buy passing the damage that was done
+            'Provide some feedback via the listbox:
             lbxAttackResults.Items.Add(clsHero.strName + " attacked and scored a hit. Damage Done: " + intDamageDone.ToString)
         Else
-            'lbxAttackResults.Items.Add("Hero Miss: " + bolHitSuccess.ToString)
             lbxAttackResults.Items.Add(clsHero.strName + " Attacked and Missed")
         End If
 
@@ -155,17 +171,20 @@ Public Class frmMain
         If clsHero.bolDead And clsMonster.bolDead Then
             MessageBox.Show(clsHero.strName + " and " + clsMonster.strName + " are Dead, Game Over!", "A Draw", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             btnAttack.Enabled = False
+            Me.AcceptButton = btnBeginCombat
             Return
         End If
 
         If clsHero.bolDead Then
             MessageBox.Show(clsHero.strName + " is Dead, Game Over!", "Defeat!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             btnAttack.Enabled = False
+            Me.AcceptButton = btnBeginCombat
         End If
 
         If clsMonster.bolDead Then
             MessageBox.Show(clsMonster.strName + " is Dead, Game Over!", "Victory!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             btnAttack.Enabled = False
+            Me.AcceptButton = btnBeginCombat
         End If
     End Sub
 
