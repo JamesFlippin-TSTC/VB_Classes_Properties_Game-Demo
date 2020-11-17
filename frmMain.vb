@@ -5,6 +5,9 @@
 'Program purpose: Demonstration code using a
 '                 Class file, Properties,
 '                 Setters And Getters
+
+'                 It is written so a "Restart"
+'                 game Option can be added
 '*******************************************
 '*******************************************
 
@@ -147,27 +150,33 @@ Public Class frmMain
             'Provide some feedback via the listbox:
             lbxAttackResults.Items.Add(clsHero.strName + " attacked and scored a hit. Damage Done: " + intDamageDone.ToString)
         Else
+            'Provide some feedback via the listbox:
             lbxAttackResults.Items.Add(clsHero.strName + " Attacked and Missed")
         End If
 
         'Monster's Attack
-        bolHitSuccess = rnd.Next(0, 2) > 0
-        If bolHitSuccess Then
-            'lbxAttackResults.Items.Add("Monster Hit: " + bolHitSuccess.ToString)
-            intDamageDone = rnd.Next(0, clsMonster.intDamageCanCause)
-            clsHero.Attacked(intDamageDone)
+        bolHitSuccess = rnd.Next(0, 2) > 0 'Used to indicate if, randomly, the attack was succesful or not
+        If bolHitSuccess Then   'If the attack was successful
+            intDamageDone = rnd.Next(0, clsMonster.intDamageCanCause)  'Randomize how much damage was done based on how much they can do
+            clsHero.Attacked(intDamageDone) 'Update the Heath points buy passing the damage that was done
+            'Provide some feedback via the listbox:
             lbxAttackResults.Items.Add(clsMonster.strName + " Attacked and scored a hit. Damage Done: " + intDamageDone.ToString)
         Else
-            'lbxAttackResults.Items.Add("Monster Miss: " + bolHitSuccess.ToString)
+            'Provide some feedback via the listbox:
             lbxAttackResults.Items.Add(clsMonster.strName + " Attacked and Missed")
         End If
 
+        'Provide some spacing in the listbox between entries
         lbxAttackResults.Items.Add(" ")
+
+        'scroll the listbox to the last item in the list for better feedback
         lbxAttackResults.SelectedIndex = lbxAttackResults.Items.Count - 1
 
+        'Update the current/remaining Healt points labels
         lblHeroRemainingHP.Text = clsHero.intHeathPoints.ToString
         lblMonsterRemainingHP.Text = clsMonster.intHeathPoints.ToString
 
+        'Check to see if both Hero and Monster are dead. Provide feedback and end the game
         If clsHero.bolDead And clsMonster.bolDead Then
             MessageBox.Show(clsHero.strName + " and " + clsMonster.strName + " are Dead, Game Over!", "A Draw", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             btnAttack.Enabled = False
@@ -175,12 +184,14 @@ Public Class frmMain
             Return
         End If
 
+        'Check to see if the Hero is dead. Provide feedback and end the game
         If clsHero.bolDead Then
             MessageBox.Show(clsHero.strName + " is Dead, Game Over!", "Defeat!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             btnAttack.Enabled = False
             Me.AcceptButton = btnBeginCombat
         End If
 
+        'Check to see if the Hero is dead. Provide feedback and end the game
         If clsMonster.bolDead Then
             MessageBox.Show(clsMonster.strName + " is Dead, Game Over!", "Victory!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             btnAttack.Enabled = False
